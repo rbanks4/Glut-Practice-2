@@ -1,0 +1,152 @@
+class player
+{
+public:
+	//this will be used to control movement
+	float x,y,z;
+	float x_spd, z_spd;
+	float x_accel, z_accel;
+	double gravity;
+	Model_OBJ obj;
+	int timer;
+	int jumping;
+	float boost;
+
+	
+	void init()
+	{
+		x = z = 0;
+		y = -1;
+		gravity = .0098;
+		x_spd = z_spd = 0.2;//for on button call
+		x_spd = z_spd = .2; //for move() funct
+		x_accel = z_accel = 0.0045;
+		boost = 10;
+		jumping = 0;
+	}
+
+	void move()
+	{//Reg: this will make the ball go back and forth
+			z += z_spd;
+			reflect();//reflect
+	}
+
+	void reflect()
+	{
+		if (z < -6.5)
+		{
+			z_spd = -z_spd; //Reg: bounce back
+			z = -6.4;
+		}
+		if (z > 6.5)
+		{
+			z_spd = -z_spd;
+			z = 6.4;
+		}
+	}
+
+	void update()
+	{
+		move();
+		//activated from player.jump() function
+		/*if (x_spd > .02)//for button call
+		{
+			x_spd -= 0.02;
+		}
+		if (z_spd > .02)
+		{
+			z_spd -= 0.02;
+		}*/
+		if (jumping == 2)
+		{
+			y = .01;
+			boost = .25;
+			jumping = 1;
+			/*boost = 3;
+			if ( y > 0)
+			{
+					y += boost;
+					//boost -= gravity;
+					//boost -= 0.1;
+			}
+			else
+			{
+			jumping = 0;
+			}*/
+		}
+
+		if ( (y > -1) && (jumping == 0) )
+		{
+			/*if (jumping == 1)
+			{
+				y += boost;
+				boost -= gravity;
+				jumping = 0;
+			}*/
+			y -= gravity;
+			gravity += .0098;
+
+		}
+		else if ((y > -1) && (jumping == 1))
+		{
+				y += boost;
+				boost -= gravity;
+				if (y<-1)
+				{
+					jumping = 0;
+					y = -1;
+				}
+		}
+		else 
+		{
+			gravity = .0098;
+			jumping = 2;//Reg: Changing it to 0 will make the ball jump once...since we have it at 2 it will loop (bouncing)
+			boost = 3;
+		}
+
+	}
+
+	//Reg: this is to make the object jump
+	void jump()
+	{	
+		jumping = 2;
+	}
+
+	//Reg: this is to make the object slide
+	void rolling(int x_axis, int z_axis){
+		if (x_axis == 1)
+		{
+			if(x < 6.5)
+			{
+				x += x_spd; //Reg: this will move the player to the right
+				x_spd += x_accel;
+			}
+		}
+		else if (x_axis == 2)
+			{
+			if(x > -6.5)
+			{
+				x -= x_spd; //Reg: this will move the player to the right
+				x_spd += x_accel;
+			}
+		}
+
+		if (z_axis == 1)
+		{
+			if(z < 6.5)
+			{
+				z += z_spd; //Reg: this will move the player to the right
+				z_spd += z_accel;
+			}
+		}
+		else if (z_axis == 2)
+			{
+			if(z > -6.5)
+			{
+				z -= z_spd; //Reg: this will move the player to the right
+				z_spd += z_accel;
+			}
+		}
+	}
+	
+
+};
